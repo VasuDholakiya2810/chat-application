@@ -63,11 +63,13 @@ def handle_leave_room(data):
 
 
 @socketio.on('load_backup')
+@authenticated_only
 def handle_load_backup(data):
     load_message(data)
 
 
 @socketio.on('file_load')
+@authenticated_only
 def handle_file_load(data):
     if check_date(get_date(), data['room']) is None:
         save_date(get_date(), data['room'])

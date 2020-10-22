@@ -22,9 +22,6 @@ class LoginPage(Resource):
 
         if user and user.email == email:
             login_user(user)
-            session['username']=username
-            resp= make_response(redirect(url_for('home_page')))
-            resp.set_cookie('username',username)
-            return resp
+            return make_response(redirect(url_for('home_page')))
 
         return make_response(render_template('index.html', message=USER_NOT_EXISTS), HEADERS)
