@@ -91,4 +91,4 @@ api.add_resource(CreateRoom, CREATE_ROOM, endpoint="create_room")
 api.add_resource(JoinRoom, JOIN_ROOM, endpoint="join_room")
 
 if __name__ == "__main__":
-    socketio.run(app=app, debug=True)
+    socketio.run(app=app)
