@@ -7,7 +7,8 @@
 <body>
 <h1>{{room_name}}</h1>
 
-<div id="messages"></div><br>
+<div id="messages"></div>
+<br>
 
 
 <form id="message_input_form">
@@ -50,8 +51,7 @@
             }
             message_input.value='';
             message_input.focus();
-
-        }
+            }
     });
 
     socket.on('join_room_announcement',function(data){
@@ -130,6 +130,7 @@
      }
      document.getElementById('files').value=''
     }
+
 
 
 </script>

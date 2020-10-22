@@ -1,5 +1,6 @@
 HEADERS = "text/html"
 
+INPUT_INVALID="input invalid"
 USER_NOT_EXISTS = "User does not exist...Please Signup!!"
 USERNAME_ALREADY_EXISTS="{} username already exists please try other username"
 USER_CREATED="{} user create successfully"
