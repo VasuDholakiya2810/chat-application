@@ -1,4 +1,3 @@
-HEADERS = "text/html"
 
 INPUT_INVALID="input invalid"
 USER_NOT_EXISTS = "User does not exist...Please Signup!!"
