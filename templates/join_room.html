@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Join Room</title>
+</head>
+<body>
+<h2>{{message}}</h2>
+<form action={{url_for('room')}}>
+    <div>
+        <label>
+            Join Room
+        </label>
+        <input type="text" name="room_name">
+    </div>
+    <div>
+        <button type="submit">join room</button>
+    </div>
+</form>
+
+</body>
+</html>

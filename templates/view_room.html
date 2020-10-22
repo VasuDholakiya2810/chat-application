@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Room</title>
+</head>
+<body>
+<h1>{{room_name}}</h1>
+
+<div id="messages"></div><br>
+
+
+<form id="message_input_form">
+    <div>
+        <input type="text" id="message_input" placeholder="enter your message here">
+        <button type="submit">Send</button>
+    </div>
+</form>
+<br><br>
+<form>
+    <div>
+        <input type="file" id="files">
+        <button type="button" onclick="send_file()">send</button>
+    </div>
+</form>
+<br>
+
+<div>download chat history <a href="/static/{{room_name}}.txt" download onclick="loadtxt()">{{room_name}}</a></div>
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+<script>
+    const socket=io.connect("http://127.0.0.1:5000");
+    socket.on('connect',function(){
+        socket.emit('join_room',{
+            username: "{{username}}",
+            room:"{{room_name}}"
+        });
+
+        let message_input=document.getElementById('message_input');
+        document.getElementById("message_input_form").onsubmit = function (e){
+            e.preventDefault();
+            let message = message_input.value.trim();
+            if (message.length){
+                socket.emit('send_message',{
+                    username:"{{username}}",
+                    room:"{{room_name}}",
+                    message:message
+                });
+            }
+            message_input.value='';
+            message_input.focus();
+
+        }
+    });
+
+    socket.on('join_room_announcement',function(data){
+        console.log(data)
+        if (data.username != "{{username}}"){
+            const newNode=document.createElement('div');
+            newNode.innerHTML = `<b>${data.username}</b> has joined the room`;
+            document.getElementById('messages').appendChild(newNode);
+        }
+    });
+
+    socket.on('receive_message',function(data){
+        console.log(data)
+        const newNode=document.createElement('div');
+        newNode.innerHTML=`<b>${data.username}:</b>&nbsp; ${data.message}`;
+        document.getElementById('messages').appendChild(newNode)
+    });
+
+    window.onbeforeunload = function(){
+        socket.emit('leave_room',{
+            username:"{{username}}",
+            room:"{{room_name}}"
+        })
+
+    };
+
+    socket.on('leave_room_announcement',function(data){
+        console.log(data)
+        newNode=document.createElement('div');
+        newNode.innerHTML= `<b>${data.username}</b> has left the Room`;
+        document.getElementById('messages').appendChild(newNode);
+    });
+
+    socket.on('send_image_file',function(data){
+        console.log(data)
+        nameNode=document.createElement("div")
+        newNode=document.createElement("img");
+        var str = String.fromCharCode.apply(null, new Uint8Array(data.binary));
+        newNode.src = 'data:image/jpg;base64,' + btoa(str);
+        nameNode.innerHTML=`<b>${data.username}:</b>`;
+        document.getElementById('messages').appendChild(nameNode);
+        document.getElementById('messages').appendChild(newNode);
+    });
+
+    socket.on('send_file',function(data){
+        newNode=document.createElement('div');
+        newNode.innerHTML= `<b>${data.username}</b> :<a href="/static/${data.name}" download> ${data.name}</a>`;
+        document.getElementById('messages').appendChild(newNode);
+
+    });
+
+
+    var timezonename=Intl.DateTimeFormat().resolvedOptions().timeZone;
+    function loadtxt(){
+        socket.emit('load_backup',{
+            timezone:timezonename,
+            filename:"{{room_name}}.txt",
+            room:"{{room_name}}"
+        });
+    };
+
+    function send_file(){
+        var file=document.getElementById('files').files[0];
+        var fileReader = new FileReader();
+        fileReader.readAsArrayBuffer(file)
+        fileReader.onload = () => {
+        var arrayBuffer = fileReader.result;
+        socket.emit('file_load',{
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            binary: arrayBuffer,
+            username:"{{username}}",
+            room:"{{room_name}}"
+         });
+     }
+     document.getElementById('files').value=''
+    }
+
+
+</script>
+</html>
