@@ -3,7 +3,7 @@ from flask_restful import Resource
 from flask import render_template, request, make_response
 from pymongo.errors import DuplicateKeyError
 
-from common.constant import HEADERS, USERNAME_ALREADY_EXISTS, USER_CREATED,INPUT_INVALID
+from common.constant import USERNAME_ALREADY_EXISTS, USER_CREATED,INPUT_INVALID
 from model.user import save_user
 
 
@@ -25,5 +25,4 @@ class SignUp(Resource):
             return make_response(render_template('signup.html', message=INPUT_INVALID))
 
         except DuplicateKeyError:
-            return make_response(render_template('signup.html', message=USERNAME_ALREADY_EXISTS.format(username)),
-                                 HEADERS)
+            return make_response(render_template('signup.html', message=USERNAME_ALREADY_EXISTS.format(username)))
